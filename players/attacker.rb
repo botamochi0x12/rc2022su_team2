@@ -37,6 +37,7 @@ module Players
 
 			# 移動方向を表す2次元ベクトル
 			@direction = Mittsu::Vector2.new(0, 0)
+			
 		end
 
 		# キャラクタの移動に使用されるキーの定義
@@ -122,12 +123,13 @@ module Players
 			@bomb_timer == BOMBING_INTERVAL
 		end
 
+
 		# 爆撃実行。
 		# 1回の爆撃実行で1発の爆弾を投下する。
 		# 投下後、タイマー変数をクリアし、次の爆弾投下可能になるまでのカウントを開始する。
 		# NOTE: ここで複数個爆弾オブジェクトを生成すれば、1フレームで複数個の爆弾を投下することも可能となる。
 		def bombing
-			@bombs << Bomb.new(pos: self.mesh.position)
+			@bombs << Bomb.new(pos: self.mesh.position,spe:Mittsu::Vector3.new(0, -0.1, 0))
 			@bomb_timer = 0
 		end
 	end

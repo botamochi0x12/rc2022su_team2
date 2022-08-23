@@ -11,7 +11,7 @@ module Directors
 		ATTACKER_LEVEL = 8    # 攻撃側プレイヤーの「高度」（Y座標値）
 		DEFENDER_LEVEL = -8   # 防御側プレイヤーの「高度」（Y座標値）
 		GROUND_LEVEL = -9     # 地面オブジェクトの「高度」（Y座標値）
-		GROUND_SIZE = 6.0    # 地面オブジェクトの広がり（面積）。地面オブジェクトは正方形のBoxで表現する
+		GROUND_SIZE = 4.0    # 地面オブジェクトの広がり（面積）。地面オブジェクトは正方形のBoxで表現する
 		# コンストラクタ
 		def initialize(renderer:, aspect:)
 			# スーパークラスのコンストラクタ実行
@@ -29,9 +29,9 @@ module Directors
 
 			# 地面を表現するオブジェクトを生成してシーンに登録
 			@cubes = []
-			for i in 0..7
-				for j in 0..7
-					@cubes << (Ground.new(size: GROUND_SIZE, level: GROUND_LEVEL,pox:25+(-6)*i,poz:25+(-6)*j))
+			for i in 0..11
+				for j in 0..11
+					@cubes << (Ground.new(size: GROUND_SIZE, level: GROUND_LEVEL,pox:24+(-GROUND_SIZE)*i,poz:24+(-GROUND_SIZE)*j))
 				end
 			end
 			@cubes.each{|cube| self.scene.add(cube.mesh) }
@@ -66,12 +66,12 @@ module Directors
 				add_bombs(player.collect_bombs)
 				intercept(player)
 			end
-			@cubes.each do |cube|
-				cube.fall_ground
+			@cubes.each do |cube|	
+				cube.ground(@bombs)
 			end
+			
 			erase_bombs
 			self.camera.draw_score(@score)
-
 		end
 
 		private

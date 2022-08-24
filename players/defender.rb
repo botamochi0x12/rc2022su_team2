@@ -20,15 +20,17 @@ module Players
 
 			# 交差判定用のRaycasterオブジェクトを生成する
 			@raycaster = Mittsu::Raycaster.new
+			@speed = 0
 		end
 
 		# キャラクタの移動に使用されるキーの定義
 		def control_keys
 			[
-				:k_a,  # 左移動
-				:k_d,  # 右移動
-				:k_w,  # 上移動
-				:k_s   # 下移動
+				:k_a,    # 左移動
+				:k_d,    # 右移動
+				:k_w,    # 上移動
+				:k_s,    # 下移動
+				:k_space # ジャンプ
 			]
 		end
 
@@ -39,6 +41,16 @@ module Players
 			self.mesh.position.x += 0.1 if key_statuses[control_keys[1]]
 			self.mesh.position.z -= 0.1 if key_statuses[control_keys[2]]
 			self.mesh.position.z += 0.1 if key_statuses[control_keys[3]]
+
+			if self.mesh.position.y > Directors::Game::DEFENDER_LEVEL 
+				@speed -= 0.1
+			else
+				@speed = 1.0 if key_statuses[control_keys[4]] 
+			end
+			self.mesh.position.y += @speed 
+			if self.mesh.position.y <= Directors::Game::DEFENDER_LEVEL #地面に埋まっていたら地面より上にあげる
+				self.mesh.position.y = Directors::Game::DEFENDER_LEVEL
+			end
 		end
 
 		# 爆弾迎撃メソッド。

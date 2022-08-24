@@ -30,7 +30,7 @@ module Players
 				:k_d,    # 右移動
 				:k_w,    # 上移動
 				:k_s,    # 下移動
-				:k_space #　ジャンプ
+				:k_space # ジャンプ
 			]
 		end
 

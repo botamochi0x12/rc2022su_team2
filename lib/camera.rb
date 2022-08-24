@@ -56,8 +56,8 @@ class Camera
 	def mouse_moved(position:)
 		@mouse_delta.copy(@last_mouse_position).sub(position)
 		@last_mouse_position.copy(position)
-		#@container.rotate_on_axis(Y_AXIS, @mouse_delta.x * 0.01)
-		#@container.rotate_on_axis(X_AXIS, @mouse_delta.y * 0.01)
+		@container.rotate_on_axis(Y_AXIS, @mouse_delta.x * 0.01)
+		@container.rotate_on_axis(X_AXIS, @mouse_delta.y * 0.01)
 	end
 
 	# カメラオブジェクトの位置を変更する（絶対指定）

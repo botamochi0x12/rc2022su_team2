@@ -24,7 +24,6 @@ module Directors
 				vs_com_board.mesh => vs_com_board,
 				vs_player_board.mesh => vs_player_board
 			}
-
 			# Raycasterとマウス位置の単位ベクトルを収めるオブジェクトを生成
 			@raycaster = Mittsu::Raycaster.new
 			@mouse_position = Mittsu::Vector2.new

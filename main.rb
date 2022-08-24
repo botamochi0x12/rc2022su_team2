@@ -24,7 +24,6 @@ renderer.window.run do
 	# Directors::Base#playが返してくる「next_director」アクセサの内容を次のフレームの描画を担当するディレクターに設定する。
 	# これによって、各個別ディレクターオブジェクトで「next_director」アクセサを変更することでシーン遷移ができるようになる。
 	current_director = current_director.play
-
 	# １フレーム分のレンダリングを実行。
 	# 描画対象となるシーンと撮影用カメラはそれぞれ現在のディレクターオブジェクトから得る。
 	renderer.render(current_director.scene, current_director.camera.instance)

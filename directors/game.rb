@@ -11,7 +11,7 @@ module Directors
 		ATTACKER_LEVEL = 8    # 攻撃側プレイヤーの「高度」（Y座標値）
 		DEFENDER_LEVEL = -8   # 防御側プレイヤーの「高度」（Y座標値）
 		GROUND_LEVEL = -9     # 地面オブジェクトの「高度」（Y座標値）
-		GROUND_SIZE = 4.0    # 地面オブジェクトの広がり（面積）。地面オブジェクトは正方形のBoxで表現する
+		GROUND_SIZE = 6.0    # 地面オブジェクトの広がり（面積）。地面オブジェクトは正方形のBoxで表現する
 		# コンストラクタ
 		def initialize(renderer:, aspect:)
 			# スーパークラスのコンストラクタ実行
@@ -29,8 +29,8 @@ module Directors
 
 			# 地面を表現するオブジェクトを生成してシーンに登録
 			@cubes = []
-			for i in 0..11
-				for j in 0..11
+			for i in 0..7
+				for j in 0..7
 					@cubes << (Ground.new(size: GROUND_SIZE, level: GROUND_LEVEL,pox:24+(-GROUND_SIZE)*i,poz:24+(-GROUND_SIZE)*j))
 				end
 			end
@@ -40,6 +40,9 @@ module Directors
 			@players << Players::Attacker.new(level: ATTACKER_LEVEL)
 			@players << Players::Defender.new(level: DEFENDER_LEVEL)
 
+			self.camera.position.z = 30
+			self.camera.position.y = 20
+			self.camera.rotation.x = -1
 			# 各プレイヤーのメッシュをシーンに登録
 			@players.each{|player| self.scene.add(player.mesh) }
 
@@ -50,16 +53,10 @@ module Directors
 			@score = 0
 			@mouse_position = Mittsu::Vector2.new
 			@raycaster = Mittsu::Raycaster.new
-			@f_count = 0
 		end
 
 		# 1フレーム分のゲーム進行処理
 		def render_frame
-			@f_count += 1
-			if @f_count > 200 then
-				@f_count = 0
-				@cubes[5].fall(count:120)
-			end
 			@players.each do |player|
 				key_statuses = check_key_statuses(player)
 				player.play(key_statuses, self.selected_mode)
@@ -72,6 +69,28 @@ module Directors
 			
 			erase_bombs
 			self.camera.draw_score(@score)
+
+			#選択しているママス
+			@mouse_position.x = ((@renderer.window.mouse_position.x / SCREEN_WIDTH) * 2.0 - 1.0)
+			@mouse_position.y = ((@renderer.window.mouse_position.y / SCREEN_HEIGHT) * -2.0 + 1.0)
+			# 当たり判定実行
+			@raycaster.set_from_camera(@mouse_position, self.camera.instance)
+			ground_array = []
+			@cubes.each do |cube|
+			  ground_array << cube.mesh
+			end
+			intersects = @raycaster.intersect_objects(ground_array)
+			for i in 0..7
+			  for j in 0..7
+					@cubes[j+ i*8].init_selected_ground()
+			  end
+			end
+			intersects.each do |intersect|
+			  #print (intersect[:object].position.x)," ",(intersect[:object].position.z),"\n" #テスト用
+				i_index = (intersect[:object].position.x-24)/(-GROUND_SIZE)
+				j_index = (intersect[:object].position.z-24)/(-GROUND_SIZE)
+				@cubes[j_index + i_index*8].selected_ground()
+			end
 		end
 
 		private
@@ -91,6 +110,15 @@ module Directors
 			@score += removed_bombs.size
 		end
 
+		def mouse_released(button:,position:)
+			case button
+			# クリックされたボタンが左クリックである場合
+			when :m_left
+				@cubes.each do |cube|
+					cube.click_event()
+				end
+			end
+		end
 		# シーンに爆弾を追加
 		def add_bombs(bombs)
 			bombs.each do |bomb|
@@ -123,6 +151,8 @@ module Directors
 		def mouse_clicked(button:, position:)
 			self.camera.mouse_clicked(button: button, position: position)
 		end
+
+		
 
 		# カメラ視点操作用イベントハンドラ（マウスホイールのスクロール検知）オーバーライド
 		def mouse_wheel_scrolled(offset:)

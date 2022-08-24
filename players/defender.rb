@@ -13,7 +13,7 @@ module Players
 				mat_type: :phong,
 				color: 0x0000ff
 			}
-			super(x: 0, y: 2, z: 0, mesh_attr: attr)
+			super(x: 0, y: level, z: 0, mesh_attr: attr)
 
 			# 交差判定用Raycasterの向きを決定する単位ベクトルを生成する
 			@norm_vector = Mittsu::Vector3.new(0, 1, 0).normalize

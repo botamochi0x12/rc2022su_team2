@@ -11,8 +11,7 @@ module Directors
 		ATTACKER_LEVEL = 8    # 攻撃側プレイヤーの「高度」（Y座標値）
 		DEFENDER_LEVEL = -8   # 防御側プレイヤーの「高度」（Y座標値）
 		GROUND_LEVEL = -9     # 地面オブジェクトの「高度」（Y座標値）
-		GROUND_SIZE = 50.0    # 地面オブジェクトの広がり（面積）。地面オブジェクトは正方形のBoxで表現する
-
+		GROUND_SIZE = 4.0    # 地面オブジェクトの広がり（面積）。地面オブジェクトは正方形のBoxで表現する
 		# コンストラクタ
 		def initialize(renderer:, aspect:)
 			# スーパークラスのコンストラクタ実行
@@ -29,9 +28,13 @@ module Directors
 			add_lights
 
 			# 地面を表現するオブジェクトを生成してシーンに登録
-			@ground = Ground.new(size: GROUND_SIZE, level: GROUND_LEVEL)
-			self.scene.add(@ground.mesh)
-
+			@cubes = []
+			for i in 0..11
+				for j in 0..11
+					@cubes << (Ground.new(size: GROUND_SIZE, level: GROUND_LEVEL,pox:24+(-GROUND_SIZE)*i,poz:24+(-GROUND_SIZE)*j))
+				end
+			end
+			@cubes.each{|cube| self.scene.add(cube.mesh) }
 			# 攻撃側（上側）、防御側（下側）のそれぞれのプレイヤーキャラクタを生成
 			@players = []
 			@players << Players::Attacker.new(level: ATTACKER_LEVEL)
@@ -45,16 +48,28 @@ module Directors
 
 			# 攻撃側プレイヤーの獲得スコアの初期化
 			@score = 0
+			@mouse_position = Mittsu::Vector2.new
+			@raycaster = Mittsu::Raycaster.new
+			@f_count = 0
 		end
 
 		# 1フレーム分のゲーム進行処理
 		def render_frame
+			@f_count += 1
+			if @f_count > 200 then
+				@f_count = 0
+				@cubes[5].fall(count:120)
+			end
 			@players.each do |player|
 				key_statuses = check_key_statuses(player)
 				player.play(key_statuses, self.selected_mode)
 				add_bombs(player.collect_bombs)
 				intercept(player)
 			end
+			@cubes.each do |cube|	
+				cube.ground(@bombs)
+			end
+			
 			erase_bombs
 			self.camera.draw_score(@score)
 		end

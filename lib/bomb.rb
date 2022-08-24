@@ -17,7 +17,7 @@ class Bomb
 
 	# コンストラクタ
 	# pos: 爆弾を出現させる初期位置となる座標（Vector3オブジェクト）
-	def initialize(pos:)
+	def initialize(pos:,spe:)
 		# 爆弾の3D形状を生成
 		@mesh = MeshFactory.generate(
 			geom_type: :sphere,
@@ -30,14 +30,17 @@ class Bomb
 		# ※ 引数posには攻撃側プレイヤーの座標がそのまま渡されてくることを前提するため、初期位置が重ならないようにする。
 		# NOTE: Meshのpositionを他のVector3オブジェクトと同じにするには、copyメソッドを使ってVector3オブジェクトを複製
 		#       して利用する点に注意。
+		@speed = Mittsu::Vector3.new(0, 0, 0)
+		@speed.copy(spe)
 		@mesh.position.copy(pos)
-		@mesh.position.y -= 1.0
 	end
 
 	# 爆弾を1フレーム分移動させる。
 	# 引数ground_levenは、爆弾が到達できる下限となるY座標値（そこがGround、つまり地表という意味になる）
 	def move(ground_level)
-		@mesh.position.y -= 0.1
-		@mesh.position.y <= ground_level
+		@mesh.position.x += @speed.x
+		@mesh.position.y += @speed.y
+		@mesh.position.z += @speed.z
+		return(@mesh.position.y <= ground_level || @mesh.position.x > 25|| @mesh.position.x < -25|| @mesh.position.z > 25|| @mesh.position.z < -25)
 	end
 end

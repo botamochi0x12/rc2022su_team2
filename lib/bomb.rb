@@ -22,7 +22,7 @@ class Bomb
 		@mesh = MeshFactory.generate(
 			geom_type: :sphere,
 			mat_type: :phong,
-			radius: 0.5,
+			radius: 1.5,#0.5
 			color: 0xffffff
 		)
 
@@ -41,6 +41,6 @@ class Bomb
 		@mesh.position.x += @speed.x
 		@mesh.position.y += @speed.y
 		@mesh.position.z += @speed.z
-		return(@mesh.position.y <= ground_level || @mesh.position.x > 25|| @mesh.position.x < -25|| @mesh.position.z > 25|| @mesh.position.z < -25)
+		return(@mesh.position.y <= ground_level || @mesh.position.x > 28|| @mesh.position.x < -28|| @mesh.position.z > 28|| @mesh.position.z < -28)
 	end
 end

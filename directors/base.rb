@@ -16,7 +16,6 @@ module Directors
 			self.scene = Mittsu::Scene.new
 			self.camera = camera
 			self.scene.add(camera.container)
-
 			# 次フレームの描画を担当する「next_director」アクセサの初期値をself（このディレクター自身）に
 			# セットしておく
 			self.next_director = self

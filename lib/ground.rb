@@ -3,9 +3,8 @@ require_relative 'mesh_factory'
 # 地表オブジェクトを定義するクラス
 class Ground
 	# 地表の3D形状へのアクセサ
-	attr_reader :mesh, :bomb_flag
+	attr_reader :mesh, :bomb_flag, :fall_count, :wait_count
 	GROUND_LEVEL = -9
-	GROUND_SIZE = 6.0
 	# コンストラクタ
 	def initialize(size: 30.0, level: 0, pox:0,poz:0)
 		@mesh = MeshFactory.generate(
@@ -34,19 +33,42 @@ class Ground
 	def init_selected_ground
 		@select_flag = 0
 	end
-	def click_event
+	def click_event(select_sabotage,player)
 		if @select_flag == 1 then
-			fall(count:120,wait: 30)
+			fall(count:120,wait: 30) if select_sabotage == 0
+			#@mesh.position.x
+			if select_sabotage == 1 then
+				pos = Mittsu::Vector3.new(-27,-8,@mesh.position.z)
+				spe = Mittsu::Vector3.new(0.5,0,0)
+				player.bomb(pos,spe)
+			elsif select_sabotage == 2 then
+				pos = Mittsu::Vector3.new(27,-8,@mesh.position.z)
+				spe = Mittsu::Vector3.new(-0.5,0,0)
+				player.bomb(pos,spe)
+			elsif select_sabotage == 4 then
+				pos = Mittsu::Vector3.new(@mesh.position.x,-8,27)
+				spe = Mittsu::Vector3.new(0,0,-0.5)
+				player.bomb(pos,spe)
+			elsif select_sabotage == 3 then
+				pos = Mittsu::Vector3.new(@mesh.position.x,-8,-27)
+				spe = Mittsu::Vector3.new(0,0,0.5)
+				player.bomb(pos,spe)
+			elsif select_sabotage == 5 then
+				pos = Mittsu::Vector3.new(@mesh.position.x,8,@mesh.position.z)
+				spe = Mittsu::Vector3.new(0,-0.1,0)
+				player.bomb(pos,spe)
+			end
 		end
 	end
 	def ground(bombs)
+		g_size = Directors::Game::GROUND_SIZE
 		nbombs = []
 		nbombs = bombs
 		@bomb_flag = 0
 		pos_x = @mesh.position.x
 		pos_z = @mesh.position.z
 		nbombs.each do |bomb|
-			if(pos_x- GROUND_SIZE/2 <= bomb.mesh.position.x && bomb.mesh.position.x <= pos_x + GROUND_SIZE/2&& pos_z-GROUND_SIZE/2 <= bomb.mesh.position.z && bomb.mesh.position.z <= pos_z+GROUND_SIZE/2) then
+			if(pos_x - g_size/2 <= bomb.mesh.position.x && bomb.mesh.position.x <= pos_x + g_size/2&& pos_z-g_size/2 <= bomb.mesh.position.z && bomb.mesh.position.z <= pos_z+g_size/2) then
 				@bomb_flag = 1
 			end
 		end

@@ -73,6 +73,10 @@ module Players
 			@bombs.clear # 爆弾保管用配列をクリアする
 			result
 		end
+		def bomb(position,speed)
+			@bombs << Bomb.new(pos: position,spe: speed)
+			@bomb_timer = 0
+		end
 
 		private
 
@@ -132,5 +136,6 @@ module Players
 			@bombs << Bomb.new(pos: self.mesh.position,spe:Mittsu::Vector3.new(0, -0.1, 0))
 			@bomb_timer = 0
 		end
+		
 	end
 end

@@ -18,7 +18,7 @@ class Camera
 	Y_AXIS = Mittsu::Vector3.new(0.0, 1.0, 0.0)
 
 	# 得点のカウントをScoreBoardオブジェクトにdelegate（移譲）する
-	delegate draw_score: :@score_board
+	delegate draw_score: :@score_board ,draw_sabotage: :@sabotage_board
 
 	# コンストラクタ
 	# 得点表示用スプライト（ScoreBoard）やMittsuのPerspectiveCameraオブジェクトなど、必要な初期化を行う。
@@ -26,11 +26,13 @@ class Camera
 	# カメラは必ずしもシーンに追加しなくても使えるが、こうすることでマウスドラッグによる視点回転などを表現しやすくする。
 	def initialize(aspect: , fov: DEFAULT_FOV, near: DEFAULT_NEAR, far: DEFAULT_FAR, initial_z_pos: DEFAULT_Z_POS)
 		@score_board = ScoreBoard.new(x: -14, y: 10)
+		@sabotage_board = SabotageBoard.new(x: -7, y: 10)
 		@instance = Mittsu::PerspectiveCamera.new(fov, aspect, near, far)
 		@instance.position.z = initial_z_pos
 		@container = Mittsu::Object3D.new
 		@container.add(self.instance)
 		@container.add(@score_board.container)
+		@container.add(@sabotage_board.container)
 		@mouse_delta = Mittsu::Vector2.new
 		@last_mouse_position = Mittsu::Vector2.new
 	end

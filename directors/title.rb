@@ -16,7 +16,7 @@ module Directors
 			self.scene.add(@earth)
 
 			# テキスト用ボードオブジェクト追加
-			vs_com_board = TextBoard.new(texture_path: "textures/title_vs_com.png", value: Directors::Game::VS_COM_MODE)
+			vs_com_board = TextBoard.new(texture_path: "textures/score.png", value: Directors::Game::VS_COM_MODE)
 			vs_player_board = TextBoard.new(texture_path: "textures/title_vs_player.png", value: Directors::Game::VS_PLAYER_MODE, y: -2)
 			self.scene.add(vs_com_board.mesh)
 			self.scene.add(vs_player_board.mesh)

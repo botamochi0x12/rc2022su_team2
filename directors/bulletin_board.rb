@@ -1,5 +1,6 @@
 # bulletin_boardmv 
 require_relative 'base'
+require_relative 'game'  # FIXME
 
 # TODO: Show lines of playernames that servived this game.
 # TODO: Transition to the Game Over scence.
@@ -10,20 +11,25 @@ module Directors
         def initialize(renderer:, aspect:)
             super
 			
-			# TODO: Create a score board UI
-			score_board = TextBoard.new(texture_path: "textures/title_vs_com.png", value: Directors::Game::VS_COM_MODE)
-			# score_board = TextBoard.new(texture_path: "textures/designed_score_board.png")
+			# Create a score board UI
+			score_board = TextBoard.new(texture_path: "textures/score.png", value: Directors::Game::VS_COM_MODE)
 			self.scene.add(score_board.mesh)
 			
 			@_next_director = nil 
 			# Directors::GameOver.new(renderer: renderer, aspect: aspect)
+
+			@cnt_frame = 0
+			puts "#{self} has been initialized"
         end
 
 		# @override
 		# 1フレーム分のゲーム進行処理
 		def render_frame
+			@cnt_frame += 1
 			escape_key_pressed = false
+			puts "#{@cnt_frame} has passsed..." if @cnt_frame % 60 == 0
 			if escape_key_pressed 
+				puts "escape key has been pressed, then transition to the game over."
 				_transition_to_game_over
 			end
 		end

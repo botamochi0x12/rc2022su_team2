@@ -68,6 +68,7 @@ module Directors
 			@raycaster = Mittsu::Raycaster.new
 			@container = Mittsu::Object3D.new
 			@sabo_list = []
+			@dead_flag = 0
 			@select_ground = 0
 			@result_wAttacker_director = Directors::Result_wAttacker.new(renderer: renderer, aspect: aspect)
 			@result_wDefender_director = Directors::Result_wDefender.new(renderer: renderer, aspect: aspect)
@@ -156,7 +157,8 @@ module Directors
 				end
 				@select_ground = j_index + i_index*(GROUND_K);
 			end
-			if @players[1].dead == 1 then
+			if @players[1].dead == 1 && @dead_flag == 0 then
+				@dead_flag = 1
 				self.next_director = @result_wAttacker_director
 			end
 		end

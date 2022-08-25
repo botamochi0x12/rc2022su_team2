@@ -4,6 +4,7 @@ module Directors
 	# ゲーム本編のシーン制御用ディレクタークラス
 	class Game < Base
 		attr_accessor :selected_mode
+		attr_accessor :start_time
 
 		VS_COM_MODE = "com"
 		VS_PLAYER_MODE = "player"
@@ -48,6 +49,8 @@ module Directors
 
 			# 攻撃側プレイヤーの獲得スコアの初期化
 			@score = 0
+			@time = 60*10
+			@limit_time = 180
 			@mouse_position = Mittsu::Vector2.new
 			@raycaster = Mittsu::Raycaster.new
 			@f_count = 0
@@ -66,15 +69,32 @@ module Directors
 				add_bombs(player.collect_bombs)
 				intercept(player)
 			end
+			set_time
+			# 60秒たったら
+			if @limit_time - @time < 0
+				# すぐに終了してるが、何かしたければここに追加する
+				exit
+			end
 			@cubes.each do |cube|	
 				cube.ground(@bombs)
 			end
 			
 			erase_bombs
-			self.camera.draw_score(@score)
+
+			if self.camera.respond_to?(:draw_time) then
+				self.camera.draw_time(@limit_time - @time) #時間表示
+			elsif self.camera.respond_to?(:draw_score)then 
+				self.camera.draw_score(@score)
+			else 
+				raise "Choose either :TIME_BOARD or :SCORE_BOARD for drawing on the display"
+			end
 		end
 
 		private
+		
+		def set_time
+			@time = (Time.now - @start_time).floor
+		end	
 
 		# 爆弾迎撃処理
 		def intercept(player)

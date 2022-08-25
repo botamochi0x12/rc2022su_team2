@@ -1,5 +1,13 @@
 require 'mittsu'
 
+module SkeletonsInHole
+	class Base
+		ENTRYPOINT_PATH = __FILE__
+		def initialize
+		end
+	end
+end
+
 # 依存するファイル群を一括でrequireする
 Dir.glob("lib/*.rb") {|path| require_relative path }
 Dir.glob("players/*.rb") {|path| require_relative path }

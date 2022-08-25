@@ -72,6 +72,7 @@ module Directors
 		def transition_scene(val)
 			# 次のシーンに選択された値を送る
 			@game_director.selected_mode = val
+			@game_director.start_time = Time.now
 
 			# 次のシーンを担当するディレクターのMittsuイベントのアクティベートを行う。
 			# ※ シーンを切り替える瞬間に行わないと、後発のディレクターのイベントハンドラで先発のイベントハンドラが

@@ -73,17 +73,42 @@ module Directors
 		
 
 		def render_frame
-			@cubes.each do |cube|	
-				cube.ground(@bombs)
-				pos_x = cube.mesh.position.x
-				pos_z = cube.mesh.position.z
-				d = (GROUND_SIZE-2.5)
-				#@players[1].fall_initialize
-				if pos_x-d < @players[1].mesh.position.x && @players[1].mesh.position.x < pos_x + d && pos_z-d < @players[1].mesh.position.z && @players[1].mesh.position.z < pos_z + d then
-					if cube.fall_count > 0 && cube.wait_count == 0 then
-						@players[1].g_sp -= 0.1 if @players[1].speed.abs == 0 && @players[1].mesh.position.y <= -8
+			for i in 0..(GROUND_K-1)
+				for j in 0..(GROUND_K-1)
+					@cubes[j+i*GROUND_K].ground(@bombs)
+					pos_x = @cubes[j+i*GROUND_K].mesh.position.x
+					pos_z = @cubes[j+i*GROUND_K].mesh.position.z
+					d = (GROUND_SIZE-1)/2
+					pos = [pos_x-d,pos_x+d,pos_z-d,pos_z+d]
+					if i-1 > 0 then
+						if !(@cubes[j+(i-1)*GROUND_K].fall_count > 0 && @cubes[j+(i-1)*GROUND_K].wait_count == 0) then
+							pos[0] = pos_x-(GROUND_SIZE)/2
+						end
+					end
+					if i+1 < (GROUND_K)
+						if !(@cubes[j+(i+1)*GROUND_K].fall_count > 0 && @cubes[j+(i+1)*GROUND_K].wait_count == 0) then
+							pos[1] = pos_x+(GROUND_SIZE)/2
+						end
+					end
+					if j-1 > 0 then
+						if !(@cubes[(j-1)+(i)*GROUND_K].fall_count > 0 && @cubes[(j-1)+(i)*GROUND_K].wait_count == 0) then
+							pos[2] = pos_z-(GROUND_SIZE)/2
+						end
+					end
+					if j+1 < (GROUND_K) then
+						if !(@cubes[(j+1)+(i)*GROUND_K].fall_count > 0 && @cubes[(j+1)+(i)*GROUND_K].wait_count == 0) then
+							pos[3] = pos_z+(GROUND_SIZE)/2
+						end
+					end
+					if  pos[0]< @players[1].mesh.position.x && @players[1].mesh.position.x < pos[1] && pos[2] < @players[1].mesh.position.z && @players[1].mesh.position.z < pos[3] then
+						if @cubes[j+i*GROUND_K].fall_count > 0 && @cubes[j+i*GROUND_K].wait_count == 0 then
+							@players[1].g_sp -= 0.1 if @players[1].speed.abs == 0 && @players[1].mesh.position.y <= -8
+						end
 					end
 				end
+			end
+			for i in 0..((GROUND_SIZE)*(GROUND_SIZE)-1)
+				
 			end
 			@players.each do |player|
 				key_statuses = check_key_statuses(player)

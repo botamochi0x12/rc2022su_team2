@@ -45,10 +45,17 @@ module Directors
 
 			# 攻撃側プレイヤーの獲得スコアの初期化
 			@score = 0
+
+			@_next_director = Directors::BulletinBoard.new(renderer: renderer, aspect: aspect)
+
+			@cnt_frame = 0
+			@first_time = true
 		end
 
 		# 1フレーム分のゲーム進行処理
 		def render_frame
+			@cnt_frame += 1
+
 			@players.each do |player|
 				key_statuses = check_key_statuses(player)
 				player.play(key_statuses, self.selected_mode)
@@ -57,6 +64,17 @@ module Directors
 			end
 			erase_bombs
 			self.camera.draw_score(@score)
+
+			game_over = @cnt_frame > 10 * 60
+			p "Time has spent: #{@cnt_frame / 60}" if @cnt_frame % 30 == 0
+			# NOTE: Print twice per 1 sec
+
+			if game_over && @first_time
+				@first_time = false
+				@_next_director.score = @score
+				@_next_director.activate_events
+				self.next_director = @_next_director
+			end
 		end
 
 		private

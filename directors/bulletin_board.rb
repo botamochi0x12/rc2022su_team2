@@ -5,13 +5,15 @@ require_relative 'base'
 # TODO: Transition to the Game Over scence.
 module Directors
 	class BulletinBoard < Base
+		attr_accessor :score
 
-        def initialize(renderer:, aspect:, camera: nil)
+        def initialize(renderer:, aspect:)
             super
 			
 			# TODO: Create a score board UI
+			score_board = TextBoard.new(texture_path: "textures/title_vs_com.png", value: Directors::Game::VS_COM_MODE)
 			# score_board = TextBoard.new(texture_path: "textures/designed_score_board.png")
-			# self.scene.add(score_board.mesh)
+			self.scene.add(score_board.mesh)
 			
 			@_next_director = nil 
 			# Directors::GameOver.new(renderer: renderer, aspect: aspect)
@@ -20,6 +22,7 @@ module Directors
 		# @override
 		# 1フレーム分のゲーム進行処理
 		def render_frame
+			escape_key_pressed = false
 			if escape_key_pressed 
 				_transition_to_game_over
 			end
@@ -31,7 +34,7 @@ module Directors
 			# 次のシーンを担当するディレクターのMittsuイベントのアクティベートを行う。
 			# ※ シーンを切り替える瞬間に行わないと、後発のディレクターのイベントハンドラで先発のイベントハンドラが
 			#    上書きされてしまうため、このタイミングで実行する。
-			@game_director.activate_events
+			@_next_director.activate_events
 
 			# next_directorアクセサを切り替えることで、次のフレームの描画からシーンが切り替わる。
 			# ※ このメカニズムはmain.rb側のメインループで実現している点に注意

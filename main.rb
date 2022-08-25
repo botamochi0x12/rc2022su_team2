@@ -16,7 +16,7 @@ Dir.glob("directors/*.rb") {|path| require_relative path }
 # 画面サイズとキャプション用の定数を定義
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768
-TITLE = 'Ruby Camp 2022 Summer Example'
+TITLE = 'Skelletons In The Dark, created by Technus Japan Wip. (aka. rc2022su_team2)'
 
 # レンダラーオブジェクト生成
 renderer = Mittsu::OpenGLRenderer.new width: SCREEN_WIDTH, height: SCREEN_HEIGHT, title: TITLE

@@ -2,6 +2,8 @@
 
 source "https://rubygems.org"
 
-# gem "rails"
-
 gem "mittsu", "~> 0.3.3"
+
+group :development do
+    gem "solargraph", "~> 0.46.0", require: false
+end

@@ -41,7 +41,7 @@ module Directors
 			@cubes.each{|cube| self.scene.add(cube.mesh) }
 			# 攻撃側（上側）、防御側（下側）のそれぞれのプレイヤーキャラクタを生成
 			@players = []
-			@players << Players::Attacker.new(level: ATTACKER_LEVEL)
+			@players << Players::Demo_Attacker.new(level: ATTACKER_LEVEL)
 			@players << Players::Demo_Defender.new(level: DEFENDER_LEVEL)
 			@select_sabotage = 0
 			self.camera.position.z = 30
@@ -54,10 +54,11 @@ module Directors
 				def mouse_wheel_scrolled(offset:)
 					# DO nothing
 				end
+
 			end
 			# 各プレイヤーのメッシュをシーンに登録
-			@players.each{|player| self.scene.add(player.mesh) }
-
+			#@players.each{|player| self.scene.add(player.mesh) }
+			self.scene.add(@players[1].mesh)
 			# 攻撃側が落とす爆弾の保存用配列を初期化
 			@bombs = []
 
@@ -67,11 +68,15 @@ module Directors
 			@raycaster = Mittsu::Raycaster.new
 			@container = Mittsu::Object3D.new
 			@sabo_list = []
+			@dead_flag = 0
 			@select_ground = 0
+			@result_wAttacker_director = Directors::Result_wAttacker.new(renderer: renderer, aspect: aspect)
+			@result_wDefender_director = Directors::Result_wDefender.new(renderer: renderer, aspect: aspect)
 		end
 		# 1フレーム分のゲーム進行処理
-		
-
+		def defender_gameover
+			puts "A"
+		end
 		def render_frame
 			for i in 0..(GROUND_K-1)
 				for j in 0..(GROUND_K-1)
@@ -151,6 +156,10 @@ module Directors
 					@cubes[j_index + i_index*(GROUND_K)].selected_ground()
 				end
 				@select_ground = j_index + i_index*(GROUND_K);
+			end
+			if @players[1].dead == 1 && @dead_flag == 0 then
+				@dead_flag = 1
+				self.next_director = @result_wAttacker_director
 			end
 		end
 

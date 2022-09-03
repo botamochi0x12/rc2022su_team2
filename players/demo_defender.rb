@@ -4,7 +4,7 @@ module Players
 	# 守備側プレイヤーを定義するクラス
 	class Demo_Defender < Base
 		INTERCEPTABLE_DISTANCE = 1.95 #1.5 # 攻撃側の爆弾に対して「接触」したと判定される距離
-		attr_accessor :g_sp,:speed
+		attr_accessor :g_sp,:speed,:dead
 		# コンストラクタ
 		def initialize(level: 0)
 			# キャラクタの3D形状を定義する情報。MeshFactoryクラスに渡される
@@ -24,6 +24,7 @@ module Players
 			@g_sp = 0
 			@speed_run = Mittsu::Vector3.new(0,0,0)
 			#@fall_flag = 0
+			@dead = 0
 		end
 		# キャラクタの移動に使用されるキーの定義
 		def control_keys
@@ -71,14 +72,14 @@ module Players
 			if self.mesh.position.x > 26 then
 				self.mesh.position.x = 26
 			end
-			if self.mesh.position.x < -26 then
-				self.mesh.position.x = -26
+			if self.mesh.position.x < -22 then
+				self.mesh.position.x = -22
 			end
 			if self.mesh.position.z > 26 then
 				self.mesh.position.z = 26
 			end
-			if self.mesh.position.z < -26 then
-				self.mesh.position.z = -26
+			if self.mesh.position.z < -22 then
+				self.mesh.position.z = -22
 			end
 				
 
@@ -96,8 +97,7 @@ module Players
 				@speed = 0
 			end
 			if self.mesh.position.y < -16 then
-				self.mesh.position.y = 8
-				@g_sp = 0
+				@dead = 1
 			end
 
 		end
@@ -128,6 +128,7 @@ module Players
 					distance = self.mesh.position.distance_to(obj.position)
 					if distance <= INTERCEPTABLE_DISTANCE
 						intercepted_bombs << bomb_map[obj]
+						@dead = 1
 					end
 				end
 			end

@@ -1,0 +1,17 @@
+{
+  "[ruby]": {
+    "editor.autoIndent": "full",
+    "editor.rulers": [80],
+    "editor.tabSize": 4,
+    "files.encoding": "utf8",
+    "files.eol": "\r\n",
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "castwide.solargraph",
+  },
+  "rdbg.useBundler": true,
+  "solargraph.useBundler": true,
+  "solargraph.formatting": true,
+  "solargraph.diagnostics": true,
+}

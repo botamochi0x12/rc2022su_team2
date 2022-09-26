@@ -42,7 +42,7 @@ module Directors
             @cubes.each { |cube| scene.add(cube.mesh) }
             # 攻撃側（上側）、防御側（下側）のそれぞれのプレイヤーキャラクタを生成
             @players = []
-            @players << Players::Demo_Attacker.new(level: ATTACKER_LEVEL)
+            @players << Players::Attacker.new(level: ATTACKER_LEVEL)
             @players << Players::Demo_Defender.new(level: DEFENDER_LEVEL)
             @select_sabotage = 0
             camera.position.z = 30
@@ -138,7 +138,7 @@ module Directors
                 end
             end
             intersects.each do |intersect|
-              # print (intersect[:object].position.x)," ",(intersect[:object].position.z),"\n" #テスト用
+                p "#{intersect[:object].position.x} #{intersect[:object].position.z}" # テスト用
                 i_index = (intersect[:object].position.x - 24) / -GROUND_SIZE
                 j_index = (intersect[:object].position.z - 24) / -GROUND_SIZE
                 if @select_sabotage == 1 || @select_sabotage == 2
@@ -156,8 +156,13 @@ module Directors
             end
             if @players[1].dead == 1 && @dead_flag == 0
                 @dead_flag = 1
-                self.next_director = @result_wAttacker_director
+                puts "Defender fell into a pitfall"
+                if false
+                    self.next_director = @result_wAttacker_director
+                    @result_wAttacker_director.activate_events
+                end
             end
+            puts "The next scene is #{next_director}"
         end
 
         private

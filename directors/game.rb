@@ -66,10 +66,10 @@ module Directors
 				add_bombs(player.collect_bombs)
 				intercept(player)
 			end
-			@cubes.each do |cube|	
+			@cubes.each do |cube|
 				cube.ground(@bombs)
 			end
-			
+
 			erase_bombs
 			self.camera.draw_score(@score)
 		end

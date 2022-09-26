@@ -20,7 +20,7 @@ module Directors
 
 			# Mittsuのイベントをアクティベート（有効化）する
 			activate_events
-			
+
 			# ゲームモード（対人・対COMの選択）のデフォルトを定義
 			self.selected_mode = VS_COM_MODE
 
@@ -41,8 +41,8 @@ module Directors
 			@cubes.each{|cube| self.scene.add(cube.mesh) }
 			# 攻撃側（上側）、防御側（下側）のそれぞれのプレイヤーキャラクタを生成
 			@players = []
-			@players << Players::Demo_Attacker.new(level: ATTACKER_LEVEL)
-			@players << Players::Demo_Defender.new(level: DEFENDER_LEVEL)
+			@players << Players::Attacker.new(level: ATTACKER_LEVEL)
+			@players << Players::Defender.new(level: DEFENDER_LEVEL)
 			@select_sabotage = 0
 			self.camera.position.z = 30
 			self.camera.position.y = 25
@@ -54,11 +54,10 @@ module Directors
 				def mouse_wheel_scrolled(offset:)
 					# DO nothing
 				end
-
 			end
 			# 各プレイヤーのメッシュをシーンに登録
-			#@players.each{|player| self.scene.add(player.mesh) }
-			self.scene.add(@players[1].mesh)
+			@players.each{|player| self.scene.add(player.mesh) }
+
 			# 攻撃側が落とす爆弾の保存用配列を初期化
 			@bombs = []
 
@@ -69,13 +68,8 @@ module Directors
 			@container = Mittsu::Object3D.new
 			@sabo_list = []
 			@select_ground = 0
-			@result_wAttacker_director = Directors::Result_wAttacker.new(renderer: renderer, aspect: aspect)
-			@result_wDefender_director = Directors::Result_wDefender.new(renderer: renderer, aspect: aspect)
 		end
 		# 1フレーム分のゲーム進行処理
-		def defender_gameover
-			puts "A"
-		end
 		def render_frame
 			for i in 0..(GROUND_K-1)
 				for j in 0..(GROUND_K-1)
@@ -112,7 +106,7 @@ module Directors
 				end
 			end
 			for i in 0..((GROUND_SIZE)*(GROUND_SIZE)-1)
-				
+
 			end
 			@players.each do |player|
 				key_statuses = check_key_statuses(player)
@@ -120,7 +114,7 @@ module Directors
 				add_bombs(player.collect_bombs)
 				intercept(player)
 			end
-			
+
 			erase_bombs
 			self.camera.draw_score(@score)
 			self.camera.draw_sabotage(@select_sabotage)
@@ -155,9 +149,6 @@ module Directors
 					@cubes[j_index + i_index*(GROUND_K)].selected_ground()
 				end
 				@select_ground = j_index + i_index*(GROUND_K);
-			end
-			if @players[1].dead == 1 then
-				self.next_director = @result_wAttacker_director
 			end
 		end
 
@@ -219,7 +210,7 @@ module Directors
 			self.camera.mouse_clicked(button: button, position: position)
 		end
 
-		
+
 
 		# カメラ視点操作用イベントハンドラ（マウスホイールのスクロール検知）オーバーライド
 		def mouse_wheel_scrolled(offset:)
@@ -229,7 +220,7 @@ module Directors
 				else
 					@select_sabotage = 5
 				end
-				
+
 			elsif offset.y < 0 then
 				if @select_sabotage < 5 then
 					@select_sabotage+=1
@@ -238,7 +229,7 @@ module Directors
 				end
 			else
 			end
-			
+
 		end
 
 		# カメラ視点操作用イベントハンドラ（マウスカーソルの移動検知）オーバーライド
